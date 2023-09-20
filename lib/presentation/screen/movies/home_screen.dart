@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_app/config/constants/environment.dart';
 import 'package:movie_app/presentation/providers/movies/movies_providers.dart';
+import 'package:movie_app/presentation/providers/providers.dart';
 import 'package:movie_app/presentation/widgets/movies/movies_slideshow.dart';
 import 'package:movie_app/presentation/widgets/widgets.dart';
 
@@ -14,7 +15,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _HomeView());
+    return Scaffold(
+      body: _HomeView(),
+      bottomNavigationBar: CustomBottomNavigationBar(),
+    );
   }
 }
 
@@ -35,9 +39,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final slideShowProvider = ref.watch(moviesSlideShowProvider);
 
-    if (nowPlayingMovies.length == 0) return CircularProgressIndicator();
+    if (slideShowProvider.length == 0) return CircularProgressIndicator();
 
     /*return ListView.builder(
       itemCount: nowPlayingMovies.length,
@@ -52,10 +56,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     return Column(
       children: [
         CustomAppBar(),
-        MoviesSlideShow(
-            movies: (nowPlayingMovies.length > 0)
-                ? nowPlayingMovies.sublist(0, 6)
-                : nowPlayingMovies),
+        MoviesSlideShow(movies: slideShowProvider)
 
         /*Expanded(
             child: ListView.builder(
